@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=50%, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+
+    <style>
+        /* Styling for the body of the web app */
+        body {
+
+            font-family: monospace;
+            margin: 0;
+            padding: 0;
+            
+        }
+
+        /* Styling for element ID chatbox */
+        #chatbox{
+            margin-left: auto;
+            margin-right: auto;
+            width: 70%;
+            margin-top: 50px;
+        }
+
+
+        /* Styling for element ID userInput */
+        #userInput{
+            margin-left: auto;
+            margin-right: auto;
+            width: 70%;
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        /* Styling for element ID textInput */
+        #textInput{
+
+            border:3px solid white;
+            border-bottom: 3px solid black;
+            font-family: monospace;
+            font-size: 30px;
+            width: 70%;
+            color: green;
+
+        }
+
+        /* Styling for element ID buttonInput */
+        #buttonInput{
+            padding: 5px;
+            font-family: monospace;
+            font-size: 16px;
+            padding: 10px;
+            border: 3px solid green;
+        }
+
+        /* Styling for header */
+
+        h1{
+            text-align: center;
+            color: green;
+        }
+
+        /*Styling for users input */
+        .userText{
+
+            font-family: monospace;
+            font-size: 16px;
+            text-align: right;
+            line-height: 25px;
+            background-color: rgba(205, 204, 204, 0.915);
+            color: black;
+            padding: 5px;
+            border: 1px solid darkgreen;
+            border-radius: 10px;
+            
+            
+        }
+
+        /*Styling for Class Siemens bot response */
+        .botText {
+
+            font-family: monospace;
+            font-size: 16px;
+            text-align: left;
+            line-height: 25px;
+            background-color: green;
+            color:white;
+            padding: 5px;
+            border: 1px solid darkgreen;
+            border-radius: 10px;
+            display: inline-block;
+            
+            
+            
+        }
+
+    </style>
+</head>
+<body>
+    <!--Displays the heading-->
+    <h1>Siemens Virtual Assistant</h1>
+    
+    <div>
+        <!--Displays the intial message from Siemens bot-->
+        <div id="chatbox">
+            <p class="boxText" style="font-family: monospace; font-size: 20px; background-color: green;
+             color:white; padding: 5px; border: 1px solid darkgreen; border-radius: 10px;
+             display: inline-block;"><span>Lindsay: Hi There!</span>
+        </div>
+        <!--Displays users input-->
+        <div id="userInput">
+            <input id="textInput" type="text" name="userMessage" placeholder="What's on your mind..."/>
+            <input id="buttonInput" type="submit" value="send"/>
+        </div>
+    </div>
+    
+    <!--Script for getting user response-->
+    <script>
+        function getUserResponse() {
+            // Get the user's input from the text input field
+            var userText = $('#textInput').val();
+            
+            // Create the HTML markup for the user's message
+            var userHTML = "<p class='userText'> You: <span>" + userText + "</span></p";
+            
+            // Clear the text input field
+            $('#textInput').val("");
+            
+            // Append the user's message to the chatbox
+            $('#chatbox').append(userHTML);
+            
+            // Scroll to the bottom of the chatbox to show the latest message
+            document.getElementById('userInput').scrollIntoView({ block: 'start', behavior: 'smooth' });
+            
+            // Send an asynchronous GET request to the server with the user's message
+            $.get("/get", { userMessage: userText }).done(function(data) {
+                // Create the HTML markup for the bot's response
+                var botHTML = "<p class='botText'> Lindsay: <span>" + data + "</span></p";
+                
+                // Append the bot's response to the chatbox
+                $('#chatbox').append(botHTML);
+            });
+        }
+    
+        // Bind the keypress event to the text input field
+        $("#textInput").keypress(function(e) {
+            // If the Enter key is pressed (key code 13), call getUserResponse function
+            if (e.which == 13) {
+                getUserResponse();
+            }
+        });
+    
+        // Bind the click event to the button input
+        $("#buttonInput").click(function() {
+            getUserResponse();
+        });
+    </script>
+        
+</body>
+</html>
